@@ -1,0 +1,157 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+
+    font-family: 'Roboto', sans-serif;
+    color: white;
+    line-height: 1.6;
+}
+
+.menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: black;
+    z-index: 10;
+}
+
+.menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.menu li {
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+}
+
+.menu a {
+    display: block;
+    padding: 20px;
+    color: white;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-family: "Nunito", sans-serif;
+}
+
+.section {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    font-family: "Nunito", sans-serif;
+}
+
+#about {
+    background-color: #111;
+}
+
+#skills {
+    background-color: #222;
+}
+
+#contact {
+    background-color: #111;
+}
+
+.container {
+
+    padding: 40px;
+    max-width: 800px;
+    text-align: left;
+}
+
+h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+
+p {
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style: disc;
+    margin-left: 40px;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+a {
+    color: #00FFFF;
+    text-decoration: none;
+}
+
+#skills ul {
+    font-weight: bold;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+}
+
+#skills.fade-in ul {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+#skills h1 {
+  opacity: 0;
+  transform: translateX(-60px);
+  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+}
+
+#skills.fade-in h1 {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+#contact ul{
+
+    list-style-type: none;
+    margin-left: 0;
+
+}
+
+#contact h1 {
+  opacity: 0;
+  transform: translateY(-60px);
+  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+}
+
+#contact.fade-in h1 {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#contact ul {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+}
+
+#contact.fade-in ul {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#text-container {
+  white-space: pre-line;
+}
+
+.fad-in {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
