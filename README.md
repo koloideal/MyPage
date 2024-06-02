@@ -5,7 +5,7 @@
 ## Установка и настройка
 - Склонируйте репозиторий
 ```
-git clone https://github.com/koloideal/InfoPortal.git
+git clone https://github.com/koloideal/MyPage.git
 ```
 
 Моя версия сайта доступна по https://kolo.lol
