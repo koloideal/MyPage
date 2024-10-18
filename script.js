@@ -18,29 +18,6 @@ function smoothScroll(event) {
   });
 }
 
-const skillItems = document.querySelectorAll('#skills li');
-
-const toggleSectionAnimation = (id) => {
-  const section = document.getElementById(id);
-
-  if (section) {
-    const rect = section.getBoundingClientRect();
-
-    if (rect.y <= window.scrollY && rect.bottom * 2 >= window.scrollY) {
-      section.classList.add('fade-in');
-    } else {
-      section.classList.remove('fade-in');
-    }
-  }
-
-  return false;
-};
-
-window.addEventListener('scroll', () => {
-  toggleSectionAnimation('skills');
-  toggleSectionAnimation('contact');
-});
-
 function fadeTextIn(element) {
   const paragraphs = element.getElementsByTagName('p');
   for (let i = 0; i < paragraphs.length; i++) {
