@@ -18,49 +18,27 @@ function smoothScroll(event) {
   });
 }
 
-function isElementInViewport(el) {
-  const rect = el.getBoundingClientRect();
-  const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-
-  return rect.top + rect.height / 2 <= windowHeight;
-}
-
 const skillItems = document.querySelectorAll('#skills li');
 
-function toggleSkillItemsAnimation() {
-  skillItems.forEach((item) => {
-    if (isElementInViewport(item)) {
-      item.classList.add('fade-in');
+const toggleSectionAnimation = (id) => {
+  const section = document.getElementById(id);
+
+  if (section) {
+    const rect = section.getBoundingClientRect();
+
+    if (rect.y <= window.scrollY && rect.bottom * 2 >= window.scrollY) {
+      section.classList.add('fade-in');
     } else {
-      item.classList.remove('fade-in');
+      section.classList.remove('fade-in');
     }
-  });
-}
-
-function toggleSkillsSectionAnimation() {
-  const skillsSection = document.getElementById('skills');
-
-  if (isElementInViewport(skillsSection)) {
-    skillsSection.classList.add('fade-in');
-  } else {
-    skillsSection.classList.remove('fade-in');
   }
-}
 
-function toggleContactsSectionAnimation() {
-  const contactsSection = document.getElementById('contact');
-
-  if (isElementInViewport(contactsSection)) {
-    contactsSection.classList.add('fade-in');
-  } else {
-    contactsSection.classList.remove('fade-in');
-  }
-}
+  return false;
+};
 
 window.addEventListener('scroll', () => {
-  toggleSkillItemsAnimation();
-  toggleSkillsSectionAnimation();
-  toggleContactsSectionAnimation()
+  toggleSectionAnimation('skills');
+  toggleSectionAnimation('contact');
 });
 
 function fadeTextIn(element) {
@@ -81,15 +59,11 @@ function fadeTextIn(element) {
 
   const spanArray = Array.from(element.getElementsByTagName('span'));
   spanArray.forEach((span, index) => {
-    setTimeout(() => { span.style.opacity = '1'; }, index * 50);
+    setTimeout(() => { span.style.opacity = '1'; }, index * 20);
   });
 }
 
 const textContainer = document.getElementById('text-container');
 fadeTextIn(textContainer);
-
-toggleSkillItemsAnimation();
-toggleSkillsSectionAnimation();
-toggleContactsSectionAnimation()
 
 
