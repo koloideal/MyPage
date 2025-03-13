@@ -21,48 +21,50 @@
     }
 
     gtag('js', new Date());
-
     gtag('config', 'G-L6GGGVSXS6');
 </script>
 <body>
 <nav class="menu">
     <ul>
-        <li><a href="#about">About Me</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#contact">Contacts</a></li>
+        <li><a href="#about" data-lang-key="menu_about">About Me</a></li>
+        <li><a href="#skills" data-lang-key="menu_skills">Skills</a></li>
+        <li><a href="#contact" data-lang-key="menu_contacts">Contacts</a></li>
     </ul>
 </nav>
 <div class="section" id="about">
     <div class="container" id="text-container">
-        <h1>About Me</h1>
-        <p><b> I am a dedicated and passionate Python backend developer with a strong focus on continuous learning and personal growth.<br>
-            I have hands-on experience in deploying and maintaining web applications, bots, and websites on various server environments.<br>
-            I take pride in delivering clean, efficient, and well-structured code, adhering to best industry practices like SOLID and DRY principles.<br>
-            Open to collaboration and always ready for new challenges, feel free to reach out through the contact information below.</b>
+        <h1 data-lang-key="about_title">About Me</h1>
+        <p data-lang-key="about_text">
+            <b>
+            I am a Backend Python Dev, focused on continuous learning and personal growth.<br>
+            I have practical experience deploying and maintaining web applications and bots.<br>
+            I create clean, efficient and well-structured code, I try to adhere to best practices such as SOLID and DRY principles.<br>
+            I am open to cooperation and always ready for new challenges, do not hesitate to contact me using the contact information below<br>
+            </b>
         </p>
     </div>
 </div>
 <div class="section" id="skills">
     <div class="container">
-        <h1>Tech Stack</h1>
+        <h1 data-lang-key="skills_title">Tech Stack</h1>
         <ul>
-            <li class="fade-in">Python / Kotlin(in progress)</li>
+            <li class="fade-in" data-lang-key="skill_1">Python / Kotlin(in progress)</li>
             <li class="fade-in">Flask / Quart / FastAPI / Celery</li>
             <li class="fade-in">Threading / Asyncio / Socket / Selenium</li>
-            <li class="fade-in">SQLite / SQLAlchemy / PostgreSQL / MySQL / MariaDB</li>
+            <li class="fade-in">SQLite / PostgreSQL / MySQL / MariaDB / PeeWee</li>
             <li class="fade-in">Aiogram / Telebot / Telethon / Pyrogram</li>
-            <li class="fade-in">Git / GitHub / SSH / FTP</li>
+            <li class="fade-in">Git / GitHub / GitLab / Postman / SSH / FTP</li>
             <li class="fade-in">Linux / Bash / Fish / ZSH / PowerShell</li>
-            <li class="fade-in">Pip / Poetry / APT / NVM / Brew / DPKG</li>
+            <li class="fade-in">Pip / Poetry / APT / NPM / Brew / DPKG</li>
             <li class="fade-in">HTML5 / CSS3 / Markdown V2 / SQL</li>
-            <li class="fade-in">VSCode / Visual Studio / PyCharm / Vim / Nano</li>
+            <li class="fade-in">VSCode / Visual Studio / PyCharm / Nano</li>
             <li class="fade-in">SOLID / ACID / DRY / KISS / SLAP / YAGNI</li>
         </ul>
     </div>
 </div>
 <div class="section" id="contact">
     <div class="container">
-        <h1>Contacts</h1>
+        <h1 data-lang-key="contact_title">Contacts</h1>
         <ul>
             <li>Email: <a href="mailto:kolo.is.main@gmail.com">kolo.is.main@gmail.com</a></li>
             <li>Telegram: <a href="https://t.me/kolo_id">kolo_id</a></li>
@@ -72,6 +74,7 @@
         </ul>
     </div>
 </div>
+<button id="language-toggle">en</button>
 <script src="script.js"></script>
 </body>
 </html>
