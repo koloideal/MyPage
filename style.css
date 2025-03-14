@@ -106,10 +106,8 @@ a {
 }
 
 #contact ul{
-
     list-style-type: none;
     margin-left: 0;
-
 }
 
 #contact.fade-in h1 {
@@ -148,3 +146,13 @@ a {
 #language-toggle:hover {
     background: #555;
 }
+
+.contact_links li{
+    display: inline-block;
+    padding-inline: 5px;
+}
+
+#contact_container{
+    text-align: center;
+}
+
