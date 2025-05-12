@@ -85,7 +85,17 @@ function switchLanguage() {
     });
     document.getElementById("language-toggle").textContent = currentLanguage === "en" ? "ru" : "en";
 }
-
 document.getElementById("language-toggle").addEventListener("click", switchLanguage);
+
+
+let currentTheme = "dark";
+
+function switchTheme(){
+    currentTheme = currentTheme === "dark" ? "light" : "dark";
+    document.body.classList.toggle('light-theme');
+    document.getElementById("theme-toggle").textContent = currentTheme === "dark" ? "light" : "dark";
+}
+
+document.getElementById("theme-toggle").addEventListener("click", switchTheme);
 
 
