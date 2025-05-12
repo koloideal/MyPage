@@ -83,7 +83,7 @@ function switchLanguage() {
             element.textContent = translations[currentLanguage][key];
         }
     });
-    document.getElementById("language-toggle").textContent = currentLanguage === "en" ? "en" : "ru";
+    document.getElementById("language-toggle").textContent = currentLanguage === "en" ? "ru" : "en";
 }
 
 document.getElementById("language-toggle").addEventListener("click", switchLanguage);
