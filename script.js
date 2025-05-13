@@ -22,7 +22,7 @@ function fadeTextIn(element) {
   const paragraphs = element.getElementsByTagName('p');
   for (let i = 0; i < paragraphs.length; i++) {
     const paragraph = paragraphs[i];
-    const text = paragraph.innerText;
+    const text = paragraph.innerText.trim();
 
     paragraph.innerHTML = '';
 
@@ -53,9 +53,8 @@ const translations = {
         "about_text": "I am a Backend Python Dev, focused on continuous learning and personal growth.\n\n" +
                     "I have practical experience deploying and maintaining web applications and bots.\n\n"+
                     "I create clean, efficient and well-structured code, I try to adhere to best practices such as SOLID and DRY principles.\n\n" +
-                    "I am open to cooperation and always ready for new challenges, do not hesitate to contact me using the contact information below\n\n",
-        "skills_title": "Tech Stack",
-        "skill_1": "Python / Kotlin(in progress)",
+                    "I am open to cooperation and always ready for new challenges, do not hesitate to contact me using the contact information below",
+        "skills_title": "Stack",
         "contact_title": "Contacts"
     },
     "ru": {
@@ -67,8 +66,7 @@ const translations = {
                     "У меня есть практический опыт развертывания и поддержки веб-приложений и ботов\n\n" +
                     "Я создаю чистый, эффективный и хорошо структурированный код, стараюсь придерживаться лучших практик, таких как принципы SOLID и DRY\n\n" +
                     "Я открыт для сотрудничества и всегда готов к новым вызовам, не стесняйтесь обращаться ко мне по контактной информации ниже",
-        "skills_title": "Тех. Стек",
-        "skill_1": "Python / Kotlin(в процессе)",
+        "skills_title": "Стек",
         "contact_title": "Контакты"
     }
 };
@@ -78,14 +76,25 @@ let currentLanguage = "en";
 function switchLanguage() {
     currentLanguage = currentLanguage === "en" ? "ru" : "en";
     document.querySelectorAll("[data-lang-key]").forEach(element => {
-        const key = element.getAttribute("data-lang-key");
-        if (translations[currentLanguage][key]) {
-            element.textContent = translations[currentLanguage][key];
-        }
+
+        element.classList.add('hidden');
+
+        setTimeout(() => {
+            const key = element.getAttribute("data-lang-key");
+            if (translations[currentLanguage][key]) {
+                element.textContent = translations[currentLanguage][key];
+            }
+            setTimeout(() => {
+                element.classList.remove('hidden');
+            }, 30);
+        }, 150);
     });
     document.getElementById("language-toggle").textContent = currentLanguage === "en" ? "ru" : "en";
 }
+
 document.getElementById("language-toggle").addEventListener("click", switchLanguage);
+
+
 
 
 let currentTheme = "dark";
@@ -94,6 +103,22 @@ function switchTheme(){
     currentTheme = currentTheme === "dark" ? "light" : "dark";
     document.body.classList.toggle('light-theme');
     document.getElementById("theme-toggle").textContent = currentTheme === "dark" ? "light" : "dark";
+
+    const gh_logo = document.getElementById("gh-logo");
+    const cw_logo = document.getElementById("cw-logo");
+
+    gh_logo.classList.add('hidden');
+    cw_logo.classList.add('hidden');
+
+    setTimeout(() => {
+        gh_logo.src = currentTheme === "light" ? "logo/github-dark.png" : "logo/github.png";
+        gh_logo.classList.remove('hidden');
+    }, 150);
+
+    setTimeout(() => {
+        cw_logo.src = currentTheme === "light" ? "logo/codewars-dark.png" : "logo/codewars.png";
+        cw_logo.classList.remove('hidden');
+    }, 150);
 }
 
 document.getElementById("theme-toggle").addEventListener("click", switchTheme);

@@ -81,6 +81,10 @@ h1 {
     margin-bottom: 20px;
 }
 
+#stack{
+    padding-left: 0.5em;
+}
+
 p {
     margin-bottom: 20px;
 }
@@ -140,11 +144,12 @@ a {
     background: #333;
     color: white;
     border: none;
-    padding: 10px 15px;
+    padding: 8px 15px;
     font-size: 18px;
     cursor: pointer;
     border-radius: 50px;
     transition: background 0.3s ease-in-out;
+    font-family: "Nunito", sans-serif;
 }
 
 #language-toggle:hover {
@@ -158,11 +163,12 @@ a {
     background: #333;
     color: white;
     border: none;
-    padding: 10px 15px;
+    padding: 8px 15px;
     font-size: 18px;
     cursor: pointer;
     border-radius: 50px;
     transition: background 0.3s ease-in-out;
+    font-family: "Nunito", sans-serif;
 }
 
 #theme-toggle:hover{
@@ -184,22 +190,33 @@ a {
 }
 
 .light-theme .menu {
-    background-color: #7c7878 ;
+    background-color: #969696;
 }
 
 .light-theme #about{
-    background-color: #acacac;
+    background-color: #E0E0E0;
 }
 .light-theme #skills{
-    background-color: #c9c5c5;
+    background-color: #F5F5F5;
 }
 .light-theme #contact {
-    background-color: #acacac;
+    background-color: #E0E0E0;
 }
-
 .light-theme #theme-toggle{
     background-color: #6c6c6c;
 }
 .light-theme #language-toggle{
     background-color: #6c6c6c;
 }
+
+#gh-logo, #cw-logo {
+    transition: opacity 0.15s ease;
+}
+
+[data-lang-key] {
+    transition: opacity 0.2s ease;
+}
+.hidden {
+    opacity: 30%;
+}
+
