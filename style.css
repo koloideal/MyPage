@@ -71,10 +71,11 @@ body {
 }
 
 .container {
-    padding: 40px;
     max-width: 800px;
     text-align: left;
 }
+
+
 
 h1 {
     font-size: 3em;
@@ -91,7 +92,7 @@ p {
 
 ul {
     list-style: disc;
-    margin-left: 40px;
+    margin-left: 20px;
 }
 
 li {
@@ -130,6 +131,7 @@ a {
 
 #text-container {
   white-space: pre-line;
+    padding: 10px;
 }
 
 .fad-in {

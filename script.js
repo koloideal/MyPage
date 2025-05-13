@@ -47,7 +47,7 @@ fadeTextIn(textContainer);
 const translations = {
     "en": {
         "menu_about": "About Me",
-        "menu_skills": "Skills",
+        "menu_skills": "Stack",
         "menu_contacts": "Contacts",
         "about_title": "About Me",
         "about_text": "I am a Backend Python Dev, focused on continuous learning and personal growth.\n\n" +
@@ -59,7 +59,7 @@ const translations = {
     },
     "ru": {
         "menu_about": "Обо мне",
-        "menu_skills": "Навыки",
+        "menu_skills": "Стек",
         "menu_contacts": "Контакты",
         "about_title": "Обо мне",
         "about_text": "Я Backend Python Dev, нацеленный на постоянное обучение и личностный рост\n\n" +
