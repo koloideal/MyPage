@@ -36,7 +36,7 @@ function fadeTextIn(element) {
 
   const spanArray = Array.from(element.getElementsByTagName('span'));
   spanArray.forEach((span, index) => {
-    setTimeout(() => { span.style.opacity = '1'; }, index * 20);
+    setTimeout(() => { span.style.opacity = '1'; }, index * 10);
   });
 }
 
