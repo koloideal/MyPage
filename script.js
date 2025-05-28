@@ -50,9 +50,9 @@ const translations = {
         "menu_skills": "Stack",
         "menu_contacts": "Contacts",
         "about_title": "About Me",
-        "about_text": "I am a Python Backend Dev. I work with Django, FastAPI and Flask. I design APIs, integrate databases and solve scaling problems.\n\n" +
-                    "I am not afraid of difficult challenges. I \"revive\" legacy code without losing functionality. I always try to adhere to best practices, I work for the future.\n\n" +
-                    "I work with REST, task queues (Celery, RabbitMQ) and cloud services. I write tests, set up CI/CD, monitor security.\n\n" +
+        "about_text": "I am a Python Backend Dev. I work with Django, FastAPI and Flask. I design APIs, solve scaling problems.\n\n" +
+                    "I am not afraid of difficult challenges. I \"revive\" legacy code without losing functionality. I try to adhere to best practices, I work for the future.\n\n" +
+                    "I work with REST, task queues (Celery, RabbitMQ) and cloud services. I write tests, set up CI/CD.\n\n" +
                     "I strive for clean code, but I maintain balance. I am always ready to learn new things. I am open to cooperation and constructive criticism.",
         "skills_title": "Stack",
         "contact_title": "Contacts"
@@ -62,9 +62,9 @@ const translations = {
         "menu_skills": "Стек",
         "menu_contacts": "Контакты",
         "about_title": "Обо мне",
-        "about_text": "Я бэкенд-разработчик на Python. Работаю с Django, FastAPI и Flask. Проектирую API, интегрирую базы данных и решаю задачи масштабирования.\n\n" +
-                    "Не боюсь сложных вызовов. «Оживляю» legacy-код без потери функционала. Всегда стараюсь придерживаться best practices, работаю на перспективу.\n\n" +
-                    "Работаю с REST,  очередями задач (Celery, RabbitMQ) и облачными сервисами. Пишу тесты, настраиваю CI/CD, слежу за безопасностью.\n\n" +
+        "about_text": "Я бэкенд-разработчик на Python. Работаю с Django, FastAPI и Flask. Проектирую API, решаю задачи масштабирования.\n\n" +
+                    "Не боюсь сложных вызовов. «Оживляю» legacy-код без потери функционала. Стараюсь придерживаться best practices, работаю на перспективу.\n\n" +
+                    "Работаю с REST,  очередями задач (Celery, RabbitMQ) и облачными сервисами. Пишу тесты, настраиваю CI/CD.\n\n" +
                     "Стремлюсь к чистому коду, но придерживаюсь баланса. Всегда готов изучать новое. Открыт к сотрудничеству и конструктивной критике.",
         "skills_title": "Стек",
         "contact_title": "Контакты"
