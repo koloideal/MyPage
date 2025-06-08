@@ -19,7 +19,7 @@ function smoothScroll(event) {
 }
 
 function fadeTextIn(element) {
-  const paragraphs = element.getElementsByTagName('p');
+  const paragraphs = element.getElementsByTagName('h1');
   for (let i = 0; i < paragraphs.length; i++) {
     const paragraph = paragraphs[i];
     const text = paragraph.innerText.trim();
@@ -36,7 +36,7 @@ function fadeTextIn(element) {
 
   const spanArray = Array.from(element.getElementsByTagName('span'));
   spanArray.forEach((span, index) => {
-    setTimeout(() => { span.style.opacity = '1'; }, index * 10);
+    setTimeout(() => { span.style.opacity = '1'; }, index * 100);
   });
 }
 
