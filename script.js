@@ -124,3 +124,362 @@ function switchTheme(){
 document.getElementById("theme-toggle").addEventListener("click", switchTheme);
 
 
+
+
+// Centipede Canvas Animation - Complete Rewrite
+(function() {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.style.position = 'fixed';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.pointerEvents = 'none';
+    canvas.style.zIndex = '5';
+    document.body.appendChild(canvas);
+    
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    // Vector utilities
+    class Vec2 {
+        constructor(x = 0, y = 0) {
+            this.x = x;
+            this.y = y;
+        }
+        
+        add(v) {
+            return new Vec2(this.x + v.x, this.y + v.y);
+        }
+        
+        sub(v) {
+            return new Vec2(this.x - v.x, this.y - v.y);
+        }
+        
+        mult(n) {
+            return new Vec2(this.x * n, this.y * n);
+        }
+        
+        mag() {
+            return Math.sqrt(this.x * this.x + this.y * this.y);
+        }
+        
+        normalize() {
+            const m = this.mag();
+            if (m > 0) return this.mult(1 / m);
+            return new Vec2(0, 0);
+        }
+        
+        setMag(n) {
+            return this.normalize().mult(n);
+        }
+        
+        limit(max) {
+            if (this.mag() > max) {
+                return this.setMag(max);
+            }
+            return this;
+        }
+        
+        heading() {
+            return Math.atan2(this.y, this.x);
+        }
+        
+        dist(v) {
+            const dx = this.x - v.x;
+            const dy = this.y - v.y;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+    }
+    
+    // Centipede with proper steering behaviors
+    class Centipede {
+        constructor() {
+            this.pos = new Vec2(canvas.width / 2, canvas.height / 2);
+            this.vel = new Vec2(2, 0);
+            this.acc = new Vec2(0, 0);
+            
+            this.maxSpeed = 2;
+            this.maxForce = 0.05;
+            
+            // Wander behavior
+            this.wanderTheta = Math.random() * Math.PI * 2;
+            this.wanderRadius = 50;
+            this.wanderDistance = 80;
+            this.wanderChange = 0.1;
+            
+            // Body segments
+            this.segmentCount = 45;
+            this.segmentGap = 6;
+            this.history = [];
+            this.maxHistory = this.segmentCount * this.segmentGap;
+            
+            // Leg animation
+            this.legPhase = 0;
+            
+            // Initialize history
+            for(let i = 0; i < this.maxHistory; i++) {
+                this.history.push({
+                    pos: new Vec2(this.pos.x, this.pos.y),
+                    angle: 0
+                });
+            }
+        }
+        
+        applyForce(force) {
+            this.acc = this.acc.add(force);
+        }
+        
+        wander() {
+            // Calculate circle position in front
+            const circlePos = this.vel.normalize().mult(this.wanderDistance);
+            const target = this.pos.add(circlePos);
+            
+            // Random point on circle
+            this.wanderTheta += (Math.random() - 0.5) * this.wanderChange;
+            const wanderPoint = new Vec2(
+                this.wanderRadius * Math.cos(this.wanderTheta),
+                this.wanderRadius * Math.sin(this.wanderTheta)
+            );
+            
+            // Rotate to velocity direction
+            const angle = this.vel.heading();
+            const rotatedWander = new Vec2(
+                wanderPoint.x * Math.cos(angle) - wanderPoint.y * Math.sin(angle),
+                wanderPoint.x * Math.sin(angle) + wanderPoint.y * Math.cos(angle)
+            );
+            
+            const targetPos = target.add(rotatedWander);
+            return this.seek(targetPos);
+        }
+        
+        seek(target) {
+            const desired = target.sub(this.pos);
+            desired.x = desired.x;
+            desired.y = desired.y;
+            const d = desired.mag();
+            
+            let speed = this.maxSpeed;
+            if (d < 100) {
+                speed = (d / 100) * this.maxSpeed;
+            }
+            
+            const steer = desired.setMag(speed).sub(this.vel).limit(this.maxForce);
+            return steer;
+        }
+        
+        avoidEdges() {
+            const margin = 100;
+            let steer = new Vec2(0, 0);
+            
+            if (this.pos.x < margin) {
+                steer.x = this.maxSpeed;
+            } else if (this.pos.x > canvas.width - margin) {
+                steer.x = -this.maxSpeed;
+            }
+            
+            if (this.pos.y < margin) {
+                steer.y = this.maxSpeed;
+            } else if (this.pos.y > canvas.height - margin) {
+                steer.y = -this.maxSpeed;
+            }
+            
+            if (steer.mag() > 0) {
+                steer = steer.setMag(this.maxSpeed).sub(this.vel).limit(this.maxForce * 3);
+            }
+            
+            return steer;
+        }
+        
+        avoidSelf() {
+            const lookAhead = 60;
+            const futurePos = this.pos.add(this.vel.normalize().mult(lookAhead));
+            
+            let closestDist = Infinity;
+            let avoidForce = new Vec2(0, 0);
+            
+            // Check against body segments (skip first 15 to allow natural curves)
+            for(let i = 15 * this.segmentGap; i < this.history.length; i += this.segmentGap) {
+                const seg = this.history[i];
+                const d = futurePos.dist(seg.pos);
+                
+                if (d < 40 && d < closestDist) {
+                    closestDist = d;
+                    // Steer away from body segment
+                    const away = futurePos.sub(seg.pos).normalize();
+                    avoidForce = away.mult(this.maxSpeed);
+                }
+            }
+            
+            if (avoidForce.mag() > 0) {
+                avoidForce = avoidForce.setMag(this.maxSpeed).sub(this.vel).limit(this.maxForce * 4);
+            }
+            
+            return avoidForce;
+        }
+        
+        update() {
+            // Apply steering behaviors
+            const wanderForce = this.wander();
+            const edgeForce = this.avoidEdges();
+            const selfForce = this.avoidSelf();
+            
+            this.applyForce(wanderForce);
+            this.applyForce(edgeForce);
+            this.applyForce(selfForce);
+            
+            // Update velocity and position
+            this.vel = this.vel.add(this.acc);
+            this.vel = this.vel.limit(this.maxSpeed);
+            this.pos = this.pos.add(this.vel);
+            this.acc = this.acc.mult(0);
+            
+            // Store in history
+            this.history.unshift({
+                pos: new Vec2(this.pos.x, this.pos.y),
+                angle: this.vel.heading()
+            });
+            
+            if (this.history.length > this.maxHistory) {
+                this.history.pop();
+            }
+            
+            this.legPhase += 0.12;
+        }
+        
+        draw() {
+            const isDarkTheme = !document.body.classList.contains('light-theme');
+            ctx.strokeStyle = isDarkTheme ? '#FFFFFF' : '#333333';
+            ctx.fillStyle = isDarkTheme ? '#FFFFFF' : '#333333';
+            ctx.lineWidth = 1.5;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            // Draw spine
+            ctx.beginPath();
+            for(let i = 0; i < this.segmentCount; i++) {
+                const index = i * this.segmentGap;
+                if (index >= this.history.length) break;
+                
+                const seg = this.history[index];
+                if (i === 0) {
+                    ctx.moveTo(seg.pos.x, seg.pos.y);
+                } else {
+                    ctx.lineTo(seg.pos.x, seg.pos.y);
+                }
+            }
+            ctx.stroke();
+            
+            // Draw segments with ribs and legs
+            for(let i = 0; i < this.segmentCount; i++) {
+                const index = i * this.segmentGap;
+                if (index >= this.history.length) break;
+                
+                const seg = this.history[index];
+                const isHead = i === 0;
+                
+                if (isHead) {
+                    this.drawHead(seg.pos.x, seg.pos.y, seg.angle);
+                } else {
+                    this.drawSegment(seg.pos.x, seg.pos.y, seg.angle, i);
+                }
+            }
+        }
+        
+        drawHead(x, y, angle) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(angle);
+            
+            // Head shape
+            ctx.beginPath();
+            ctx.arc(0, 0, 8, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            // Antennae
+            ctx.beginPath();
+            ctx.moveTo(6, 0);
+            ctx.lineTo(18, -10);
+            ctx.moveTo(6, 0);
+            ctx.lineTo(18, 10);
+            ctx.stroke();
+            
+            // Eyes
+            ctx.beginPath();
+            ctx.arc(2, -4, 2, 0, Math.PI * 2);
+            ctx.arc(2, 4, 2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.restore();
+        }
+        
+        drawSegment(x, y, angle, segmentIndex) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(angle);
+            
+            // Calculate rib width (wider in middle, narrower at ends)
+            const t = segmentIndex / this.segmentCount;
+            const ribWidth = 12 * Math.sin(t * Math.PI);
+            
+            // Draw rib (perpendicular to spine)
+            ctx.beginPath();
+            ctx.moveTo(0, -ribWidth);
+            ctx.lineTo(0, ribWidth);
+            ctx.stroke();
+            
+            // Leg animation with phase shift
+            const legPhaseOffset = segmentIndex * 0.6;
+            const legWave = Math.sin(this.legPhase + legPhaseOffset);
+            
+            // Left leg (from top of rib)
+            this.drawLeg(0, -ribWidth, legWave, -1);
+            
+            // Right leg (from bottom of rib)
+            this.drawLeg(0, ribWidth, legWave, 1);
+            
+            ctx.restore();
+        }
+        
+        drawLeg(startX, startY, wave, side) {
+            const legLength1 = 14;
+            const legLength2 = 12;
+            
+            // First segment angle
+            const angle1 = side * (Math.PI / 2.5 + wave * 0.4);
+            const joint1X = startX + Math.cos(angle1) * legLength1;
+            const joint1Y = startY + Math.sin(angle1) * legLength1;
+            
+            // Second segment angle
+            const angle2 = angle1 + side * (0.6 - wave * 0.3);
+            const footX = joint1X + Math.cos(angle2) * legLength2;
+            const footY = joint1Y + Math.sin(angle2) * legLength2;
+            
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(joint1X, joint1Y);
+            ctx.lineTo(footX, footY);
+            ctx.stroke();
+            
+            // Foot tip
+            ctx.beginPath();
+            ctx.arc(footX, footY, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+    
+    const centipede = new Centipede();
+    
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        centipede.update();
+        centipede.draw();
+        requestAnimationFrame(animate);
+    }
+    
+    animate();
+})();
