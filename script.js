@@ -135,7 +135,7 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
     canvas.style.top = '0';
     canvas.style.left = '0';
     canvas.style.pointerEvents = 'none';
-    canvas.style.zIndex = '5';
+    canvas.style.zIndex = '1';
     document.body.appendChild(canvas);
     
     function resizeCanvas() {
@@ -199,6 +199,10 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
     // Centipede with proper steering behaviors
     class Centipede {
         constructor() {
+            // Detect mobile device
+            const isMobile = window.innerWidth <= 768;
+            const scale = isMobile ? 0.5 : 1.0;
+            
             // Start off-screen at top-left
             this.pos = new Vec2(-100, -100);
             this.vel = new Vec2(2, 2);
@@ -224,8 +228,8 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
             this.sineAmplitude = 0.04;
             this.sineFrequency = 0.025;
             
-            // Body segments
-            this.segmentCount = 45;
+            // Body segments - fewer on mobile
+            this.segmentCount = isMobile ? 25 : 45;
             this.segmentGap = 6;
             this.history = [];
             this.maxHistory = this.segmentCount * this.segmentGap;
@@ -235,6 +239,9 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
             
             // Antennae animation
             this.antennaePhase = 0;
+            
+            // Scale for drawing
+            this.scale = scale;
             
             // Initialize history
             for(let i = 0; i < this.maxHistory; i++) {
@@ -250,9 +257,10 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
             let newTarget;
             
             do {
+                // Allow targets anywhere on screen, including edges
                 newTarget = new Vec2(
-                    Math.random() * (canvas.width - 200) + 100,
-                    Math.random() * (canvas.height - 200) + 100
+                    Math.random() * canvas.width,
+                    Math.random() * canvas.height
                 );
                 attempts++;
             } while (this.pos.dist(newTarget) < this.minTargetDistance && attempts < 20);
@@ -319,26 +327,8 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
         }
         
         avoidEdges() {
-            const margin = 100;
-            let steer = new Vec2(0, 0);
-            
-            if (this.pos.x < margin) {
-                steer.x = this.maxSpeed;
-            } else if (this.pos.x > canvas.width - margin) {
-                steer.x = -this.maxSpeed;
-            }
-            
-            if (this.pos.y < margin) {
-                steer.y = this.maxSpeed;
-            } else if (this.pos.y > canvas.height - margin) {
-                steer.y = -this.maxSpeed;
-            }
-            
-            if (steer.mag() > 0) {
-                steer = steer.setMag(this.maxSpeed).sub(this.vel).limit(this.maxForce * 3);
-            }
-            
-            return steer;
+            // No edge avoidance - allow centipede to go off-screen
+            return new Vec2(0, 0);
         }
         
         avoidSelf() {
@@ -460,25 +450,25 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
             ctx.rotate(angle);
             
             // Head capsule (narrower than body)
-            const headWidth = 6;
+            const headWidth = 6 * this.scale;
             ctx.beginPath();
-            ctx.ellipse(0, 0, 10, headWidth, 0, 0, Math.PI * 2);
+            ctx.ellipse(0, 0, 10 * this.scale, headWidth, 0, 0, Math.PI * 2);
             ctx.stroke();
             
             // Mandibles (челюсти)
             ctx.beginPath();
-            ctx.moveTo(8, -3);
-            ctx.lineTo(16, -6);
-            ctx.moveTo(8, 3);
-            ctx.lineTo(16, 6);
+            ctx.moveTo(8 * this.scale, -3 * this.scale);
+            ctx.lineTo(16 * this.scale, -6 * this.scale);
+            ctx.moveTo(8 * this.scale, 3 * this.scale);
+            ctx.lineTo(16 * this.scale, 6 * this.scale);
             ctx.stroke();
             
             // Mandible tips
             ctx.beginPath();
-            ctx.moveTo(16, -6);
-            ctx.lineTo(18, -4);
-            ctx.moveTo(16, 6);
-            ctx.lineTo(18, 4);
+            ctx.moveTo(16 * this.scale, -6 * this.scale);
+            ctx.lineTo(18 * this.scale, -4 * this.scale);
+            ctx.moveTo(16 * this.scale, 6 * this.scale);
+            ctx.lineTo(18 * this.scale, 4 * this.scale);
             ctx.stroke();
             
             // Long curved antennae (усы)
@@ -487,28 +477,28 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
             
             // Left antenna
             ctx.beginPath();
-            ctx.moveTo(5, -headWidth);
+            ctx.moveTo(5 * this.scale, -headWidth);
             ctx.bezierCurveTo(
-                15, -headWidth - 5 + antennaeWave1 * 10,
-                25, -headWidth - 10 + antennaeWave1 * 15,
-                35, -headWidth - 15 + antennaeWave1 * 20
+                15 * this.scale, (-headWidth - 5 + antennaeWave1 * 10) * this.scale,
+                25 * this.scale, (-headWidth - 10 + antennaeWave1 * 15) * this.scale,
+                35 * this.scale, (-headWidth - 15 + antennaeWave1 * 20) * this.scale
             );
             ctx.stroke();
             
             // Right antenna
             ctx.beginPath();
-            ctx.moveTo(5, headWidth);
+            ctx.moveTo(5 * this.scale, headWidth);
             ctx.bezierCurveTo(
-                15, headWidth + 5 + antennaeWave2 * 10,
-                25, headWidth + 10 + antennaeWave2 * 15,
-                35, headWidth + 15 + antennaeWave2 * 20
+                15 * this.scale, (headWidth + 5 + antennaeWave2 * 10) * this.scale,
+                25 * this.scale, (headWidth + 10 + antennaeWave2 * 15) * this.scale,
+                35 * this.scale, (headWidth + 15 + antennaeWave2 * 20) * this.scale
             );
             ctx.stroke();
             
             // Eyes
             ctx.beginPath();
-            ctx.arc(3, -3, 2, 0, Math.PI * 2);
-            ctx.arc(3, 3, 2, 0, Math.PI * 2);
+            ctx.arc(3 * this.scale, -3 * this.scale, 2 * this.scale, 0, Math.PI * 2);
+            ctx.arc(3 * this.scale, 3 * this.scale, 2 * this.scale, 0, Math.PI * 2);
             ctx.fill();
             
             ctx.restore();
@@ -521,7 +511,7 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
             
             // Constant rib width (no tapering), except last segment
             const isLastSegment = segmentIndex === this.segmentCount - 1;
-            const ribWidth = isLastSegment ? 8 : 12;
+            const ribWidth = (isLastSegment ? 6 : 9) * this.scale;
             
             // Draw rib (perpendicular to spine)
             ctx.beginPath();
@@ -544,8 +534,8 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
         }
         
         drawLeg(startX, startY, wave, side) {
-            const legLength1 = 14;
-            const legLength2 = 12;
+            const legLength1 = 10 * this.scale;
+            const legLength2 = 9 * this.scale;
             
             // First segment angle
             const angle1 = side * (Math.PI / 2.5 + wave * 0.4);
@@ -565,7 +555,7 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
             
             // Foot tip
             ctx.beginPath();
-            ctx.arc(footX, footY, 1.5, 0, Math.PI * 2);
+            ctx.arc(footX, footY, 1.5 * this.scale, 0, Math.PI * 2);
             ctx.fill();
         }
     }
