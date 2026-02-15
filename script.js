@@ -199,18 +199,30 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
     // Centipede with proper steering behaviors
     class Centipede {
         constructor() {
-            this.pos = new Vec2(canvas.width / 2, canvas.height / 2);
-            this.vel = new Vec2(2, 0);
+            // Start off-screen at top-left
+            this.pos = new Vec2(-100, -100);
+            this.vel = new Vec2(2, 2);
             this.acc = new Vec2(0, 0);
             
             this.maxSpeed = 2;
-            this.maxForce = 0.05;
+            this.maxForce = 0.025;
             
             // Wander behavior
             this.wanderTheta = Math.random() * Math.PI * 2;
             this.wanderRadius = 50;
             this.wanderDistance = 80;
             this.wanderChange = 0.1;
+            
+            // Waypoint system for global exploration
+            this.target = null;
+            this.arrivalRadius = 100;
+            this.minTargetDistance = Math.min(canvas.width, canvas.height) * 0.6;
+            this.pickNewTarget();
+            
+            // Sinusoidal movement (very weak)
+            this.sineOffset = 0;
+            this.sineAmplitude = 0.04;
+            this.sineFrequency = 0.025;
             
             // Body segments
             this.segmentCount = 45;
@@ -221,6 +233,9 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
             // Leg animation
             this.legPhase = 0;
             
+            // Antennae animation
+            this.antennaePhase = 0;
+            
             // Initialize history
             for(let i = 0; i < this.maxHistory; i++) {
                 this.history.push({
@@ -228,6 +243,21 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
                     angle: 0
                 });
             }
+        }
+        
+        pickNewTarget() {
+            let attempts = 0;
+            let newTarget;
+            
+            do {
+                newTarget = new Vec2(
+                    Math.random() * (canvas.width - 200) + 100,
+                    Math.random() * (canvas.height - 200) + 100
+                );
+                attempts++;
+            } while (this.pos.dist(newTarget) < this.minTargetDistance && attempts < 20);
+            
+            this.target = newTarget;
         }
         
         applyForce(force) {
@@ -259,8 +289,6 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
         
         seek(target) {
             const desired = target.sub(this.pos);
-            desired.x = desired.x;
-            desired.y = desired.y;
             const d = desired.mag();
             
             let speed = this.maxSpeed;
@@ -269,6 +297,24 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
             }
             
             const steer = desired.setMag(speed).sub(this.vel).limit(this.maxForce);
+            return steer;
+        }
+        
+        seekTarget() {
+            if (!this.target) {
+                this.pickNewTarget();
+            }
+            
+            const distance = this.pos.dist(this.target);
+            
+            // Check if reached target
+            if (distance < this.arrivalRadius) {
+                this.pickNewTarget();
+            }
+            
+            // Seek towards target
+            const desired = this.target.sub(this.pos);
+            const steer = desired.setMag(this.maxSpeed).sub(this.vel).limit(this.maxForce * 1.0);
             return steer;
         }
         
@@ -322,15 +368,32 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
             return avoidForce;
         }
         
+        applySinusoidalMovement() {
+            // Add very weak perpendicular sine wave for subtle serpentine motion
+            this.sineOffset += this.sineFrequency;
+            const sineValue = Math.sin(this.sineOffset) * this.sineAmplitude;
+            
+            // Get perpendicular vector to velocity
+            const perpendicular = new Vec2(-this.vel.y, this.vel.x).normalize();
+            const sineForce = perpendicular.mult(sineValue);
+            
+            this.applyForce(sineForce);
+        }
+        
         update() {
             // Apply steering behaviors
-            const wanderForce = this.wander();
+            const targetForce = this.seekTarget();
+            const wanderForce = this.wander().mult(0.3); // Organic wander
             const edgeForce = this.avoidEdges();
             const selfForce = this.avoidSelf();
             
+            this.applyForce(targetForce);
             this.applyForce(wanderForce);
             this.applyForce(edgeForce);
             this.applyForce(selfForce);
+            
+            // Apply very weak sinusoidal movement
+            this.applySinusoidalMovement();
             
             // Update velocity and position
             this.vel = this.vel.add(this.acc);
@@ -349,12 +412,13 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
             }
             
             this.legPhase += 0.12;
+            this.antennaePhase += 0.08;
         }
         
         draw() {
             const isDarkTheme = !document.body.classList.contains('light-theme');
-            ctx.strokeStyle = isDarkTheme ? '#FFFFFF' : '#333333';
-            ctx.fillStyle = isDarkTheme ? '#FFFFFF' : '#333333';
+            ctx.strokeStyle = isDarkTheme ? '#00FF41' : '#00AA00';
+            ctx.fillStyle = isDarkTheme ? '#00FF41' : '#00AA00';
             ctx.lineWidth = 1.5;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
@@ -395,23 +459,56 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
             ctx.translate(x, y);
             ctx.rotate(angle);
             
-            // Head shape
+            // Head capsule (narrower than body)
+            const headWidth = 6;
             ctx.beginPath();
-            ctx.arc(0, 0, 8, 0, Math.PI * 2);
+            ctx.ellipse(0, 0, 10, headWidth, 0, 0, Math.PI * 2);
             ctx.stroke();
             
-            // Antennae
+            // Mandibles (челюсти)
             ctx.beginPath();
-            ctx.moveTo(6, 0);
-            ctx.lineTo(18, -10);
-            ctx.moveTo(6, 0);
-            ctx.lineTo(18, 10);
+            ctx.moveTo(8, -3);
+            ctx.lineTo(16, -6);
+            ctx.moveTo(8, 3);
+            ctx.lineTo(16, 6);
+            ctx.stroke();
+            
+            // Mandible tips
+            ctx.beginPath();
+            ctx.moveTo(16, -6);
+            ctx.lineTo(18, -4);
+            ctx.moveTo(16, 6);
+            ctx.lineTo(18, 4);
+            ctx.stroke();
+            
+            // Long curved antennae (усы)
+            const antennaeWave1 = Math.sin(this.antennaePhase) * 0.3;
+            const antennaeWave2 = Math.sin(this.antennaePhase + Math.PI) * 0.3;
+            
+            // Left antenna
+            ctx.beginPath();
+            ctx.moveTo(5, -headWidth);
+            ctx.bezierCurveTo(
+                15, -headWidth - 5 + antennaeWave1 * 10,
+                25, -headWidth - 10 + antennaeWave1 * 15,
+                35, -headWidth - 15 + antennaeWave1 * 20
+            );
+            ctx.stroke();
+            
+            // Right antenna
+            ctx.beginPath();
+            ctx.moveTo(5, headWidth);
+            ctx.bezierCurveTo(
+                15, headWidth + 5 + antennaeWave2 * 10,
+                25, headWidth + 10 + antennaeWave2 * 15,
+                35, headWidth + 15 + antennaeWave2 * 20
+            );
             ctx.stroke();
             
             // Eyes
             ctx.beginPath();
-            ctx.arc(2, -4, 2, 0, Math.PI * 2);
-            ctx.arc(2, 4, 2, 0, Math.PI * 2);
+            ctx.arc(3, -3, 2, 0, Math.PI * 2);
+            ctx.arc(3, 3, 2, 0, Math.PI * 2);
             ctx.fill();
             
             ctx.restore();
@@ -422,9 +519,9 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
             ctx.translate(x, y);
             ctx.rotate(angle);
             
-            // Calculate rib width (wider in middle, narrower at ends)
-            const t = segmentIndex / this.segmentCount;
-            const ribWidth = 12 * Math.sin(t * Math.PI);
+            // Constant rib width (no tapering), except last segment
+            const isLastSegment = segmentIndex === this.segmentCount - 1;
+            const ribWidth = isLastSegment ? 8 : 12;
             
             // Draw rib (perpendicular to spine)
             ctx.beginPath();
@@ -432,15 +529,16 @@ document.getElementById("theme-toggle").addEventListener("click", switchTheme);
             ctx.lineTo(0, ribWidth);
             ctx.stroke();
             
-            // Leg animation with phase shift
+            // Leg animation with phase shift and alternating gait
             const legPhaseOffset = segmentIndex * 0.6;
-            const legWave = Math.sin(this.legPhase + legPhaseOffset);
             
-            // Left leg (from top of rib)
-            this.drawLeg(0, -ribWidth, legWave, -1);
+            // Left leg - normal phase
+            const leftLegWave = Math.sin(this.legPhase + legPhaseOffset);
+            this.drawLeg(0, -ribWidth, leftLegWave, -1);
             
-            // Right leg (from bottom of rib)
-            this.drawLeg(0, ribWidth, legWave, 1);
+            // Right leg - opposite phase (PI offset for alternating gait)
+            const rightLegWave = Math.sin(this.legPhase + legPhaseOffset + Math.PI);
+            this.drawLeg(0, ribWidth, rightLegWave, 1);
             
             ctx.restore();
         }
