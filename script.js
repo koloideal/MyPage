@@ -18,30 +18,119 @@ function smoothScroll(event) {
   });
 }
 
-function fadeTextIn(element) {
-  const paragraphs = element.getElementsByTagName('h1');
-  for (let i = 0; i < paragraphs.length; i++) {
-    const paragraph = paragraphs[i];
-    const text = paragraph.innerText.trim();
-
-    paragraph.innerHTML = '';
-
-    for (let j = 0; j < text.length; j++) {
-      const span = document.createElement('span');
-      span.innerText = text.charAt(j);
-      span.classList.add('fad-in');
-      paragraph.appendChild(span);
-    }
+// Hacker Text Decode Animation
+class HackerTextDecoder {
+  constructor(element, options = {}) {
+    this.element = element;
+    this.originalText = element.textContent.trim();
+    this.duration = options.duration || 1500;
+    this.chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&{}[]<>@!?';
+    this.updateInterval = 50; // Update every 50ms instead of every frame
+    this.isDecoding = false;
   }
 
-  const spanArray = Array.from(element.getElementsByTagName('span'));
-  spanArray.forEach((span, index) => {
-    setTimeout(() => { span.style.opacity = '1'; }, index * 100);
+  getRandomChar() {
+    return this.chars[Math.floor(Math.random() * this.chars.length)];
+  }
+
+  decode() {
+    if (this.isDecoding) return;
+    this.isDecoding = true;
+
+    const textLength = this.originalText.length;
+    const iterations = Math.ceil(this.duration / this.updateInterval);
+    let currentIteration = 0;
+
+    // Create array to track which characters are decoded
+    const decodedIndices = new Array(textLength).fill(false);
+    const decodeOrder = [];
+    
+    // Create random decode order
+    for (let i = 0; i < textLength; i++) {
+      decodeOrder.push(i);
+    }
+    // Shuffle array for random decode effect
+    for (let i = decodeOrder.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [decodeOrder[i], decodeOrder[j]] = [decodeOrder[j], decodeOrder[i]];
+    }
+
+    let lastUpdate = 0;
+
+    const animate = (timestamp) => {
+      if (!lastUpdate) lastUpdate = timestamp;
+      const elapsed = timestamp - lastUpdate;
+
+      if (elapsed >= this.updateInterval) {
+        lastUpdate = timestamp;
+        currentIteration++;
+        const progress = currentIteration / iterations;
+
+        // Determine how many characters should be decoded by now
+        const charsToDecodeCount = Math.floor(progress * textLength);
+        
+        // Mark characters as decoded based on progress
+        for (let i = 0; i < charsToDecodeCount; i++) {
+          if (i < decodeOrder.length) {
+            decodedIndices[decodeOrder[i]] = true;
+          }
+        }
+
+        // Build display text
+        let displayText = '';
+        for (let i = 0; i < textLength; i++) {
+          if (decodedIndices[i]) {
+            displayText += this.originalText[i];
+          } else {
+            // Show random character for undecoded positions
+            displayText += this.originalText[i] === ' ' ? ' ' : this.getRandomChar();
+          }
+        }
+
+        this.element.textContent = displayText;
+      }
+
+      if (currentIteration < iterations) {
+        requestAnimationFrame(animate);
+      } else {
+        // Ensure final text is correct
+        this.element.textContent = this.originalText;
+        this.isDecoding = false;
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }
+}
+
+// Initialize hacker text effect with IntersectionObserver
+function initHackerText() {
+  const hackerElements = document.querySelectorAll('.hacker-text, h1');
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !entry.target.dataset.decoded) {
+        entry.target.dataset.decoded = 'true';
+        const decoder = new HackerTextDecoder(entry.target);
+        decoder.decode();
+      }
+    });
+  }, {
+    threshold: 0.5,
+    rootMargin: '0px'
+  });
+
+  hackerElements.forEach(element => {
+    observer.observe(element);
   });
 }
 
-const textContainer = document.getElementById('text-container');
-fadeTextIn(textContainer);
+// Initialize on DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initHackerText);
+} else {
+  initHackerText();
+}
 
 
 const translations = {

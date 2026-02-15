@@ -139,11 +139,12 @@ a {
 
 #text-container {
   white-space: pre-line;
-    padding: 10px;
+  padding: 10px;
 }
 
-.fad-in {
-  opacity: 0;
+.hacker-text, h1 {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.05em;
 }
 
 #language-toggle {
