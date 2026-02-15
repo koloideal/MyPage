@@ -717,6 +717,7 @@ body.crt-disabled .crt-glitch::after {
     left: 50%;
     transform: translate(-50%, -50%);
     line-height: 1.6;
+    max-width: 90%;
 }
 
 .boot-text div {
@@ -734,6 +735,19 @@ body.crt-disabled .crt-glitch::after {
     }
     50%, 100% {
         opacity: 0;
+    }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .boot-text {
+        font-size: 14px;
+        letter-spacing: 0px;
+        max-width: 95%;
+    }
+    
+    .boot-text div {
+        margin-bottom: 6px;
     }
 }
 
