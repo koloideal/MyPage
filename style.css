@@ -204,14 +204,16 @@ a {
     background-color: #969696;
 }
 
-.light-theme #about{
-    background-color: #E0E0E0;
+.light-theme #about {
+    background-color: rgba(224, 224, 224, 0.5);
 }
-.light-theme #skills{
-    background-color: #F5F5F5;
+
+.light-theme #skills {
+    background-color: rgba(245, 245, 245, 0.5);
 }
+
 .light-theme #contact {
-    background-color: #E0E0E0;
+    background-color: rgba(224, 224, 224, 0.5);
 }
 .light-theme #theme-toggle{
     background-color: #6c6c6c;
