@@ -37,19 +37,19 @@ async function bootSequence() {
     bootText.innerHTML = '';
     
     // Boot messages
-    await typeTextLine(bootText, '> Checksum verified: I think, therefore I am', 50);
+    await typeTextLine(bootText, '> Checksum verified: I think, therefore I am', 30);
     await wait(300);
     
-    await typeTextLine(bootText, '> Mounting consciousness... /dev/soul', 50);
+    await typeTextLine(bootText, '> Mounting consciousness... /dev/soul', 30);
     await wait(300);
     
-    await typeTextLine(bootText, '> Analyzing reality... [SIMULATION DETECTED]', 50);
+    await typeTextLine(bootText, '> Analyzing reality... [SIMULATION DETECTED]', 30);
     await wait(300);
     
-    await typeTextLine(bootText, '> Ignoring philosophical implications...', 50);
+    await typeTextLine(bootText, '> Ignoring philosophical implications...', 30);
     await wait(300);
     
-    await typeTextLine(bootText, '> Uploading a sense of humor...', 50);
+    await typeTextLine(bootText, '> Uploading a sense of humor...', 30);
     await wait(300);
     
     await typeTextLine(bootText, '> Connection established. Hello, World.', 50);
@@ -363,6 +363,45 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.getElementById("crt-toggle").addEventListener("click", toggleCRT);
+
+
+// GAD (Centipede) Toggle
+let gadEnabled = true;
+
+function toggleGAD() {
+    gadEnabled = !gadEnabled;
+    const canvas = document.querySelector('canvas');
+    
+    if (canvas) {
+        if (gadEnabled) {
+            canvas.style.display = 'block';
+        } else {
+            canvas.style.display = 'none';
+        }
+    }
+    
+    // Save preference to localStorage
+    localStorage.setItem('gadEnabled', gadEnabled);
+}
+
+// Load GAD preference on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const savedGadState = localStorage.getItem('gadEnabled');
+    if (savedGadState !== null) {
+        gadEnabled = savedGadState === 'true';
+        if (!gadEnabled) {
+            // Wait for canvas to be created
+            setTimeout(() => {
+                const canvas = document.querySelector('canvas');
+                if (canvas) {
+                    canvas.style.display = 'none';
+                }
+            }, 100);
+        }
+    }
+});
+
+document.getElementById("gad-toggle").addEventListener("click", toggleGAD);
 
 
 var Input = {
