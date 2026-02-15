@@ -1,3 +1,122 @@
+// ========================================
+// Boot Sequence
+// ========================================
+
+let bootSkipped = false;
+let bootTimers = [];
+
+// Utility function for delays
+const wait = (ms) => new Promise(resolve => setTimeout(() => {
+    bootTimers.push(setTimeout(() => {}, 0));
+    resolve();
+}, ms));
+
+// Type text character by character and add new line
+async function typeTextLine(element, text, speed = 40) {
+    const line = document.createElement('div');
+    line.classList.add('typing');
+    element.appendChild(line);
+    
+    for (let char of text) {
+        if (bootSkipped) return;
+        line.textContent += char;
+        await wait(speed);
+    }
+    
+    // Remove typing class (cursor) when done
+    line.classList.remove('typing');
+}
+
+// Main boot sequence
+async function bootSequence() {
+    const overlay = document.getElementById('boot-overlay');
+    const bootText = overlay.querySelector('.boot-text');
+    const crtLine = overlay.querySelector('.crt-line');
+    
+    // Clear any existing content
+    bootText.innerHTML = '';
+    
+    // Boot messages
+    await typeTextLine(bootText, '> Checksum verified: I think, therefore I am', 50);
+    await wait(300);
+    
+    await typeTextLine(bootText, '> Mounting consciousness... /dev/soul', 50);
+    await wait(300);
+    
+    await typeTextLine(bootText, '> Analyzing reality... [SIMULATION DETECTED]', 50);
+    await wait(300);
+    
+    await typeTextLine(bootText, '> Ignoring philosophical implications...', 50);
+    await wait(300);
+    
+    await typeTextLine(bootText, '> Uploading a sense of humor...', 50);
+    await wait(300);
+    
+    await typeTextLine(bootText, '> Connection established. Hello, World.', 50);
+    await wait(800);
+    
+    // Fade out text
+    bootText.style.transition = 'opacity 0.3s';
+    bootText.style.opacity = '0';
+    await wait(400);
+    
+    // Start CRT animation
+    crtLine.classList.add('animate');
+    
+    // Wait for CRT animation to finish
+    await wait(1000);
+    
+    // Remove overlay and init main site
+    overlay.classList.add('hidden');
+    document.body.classList.add('boot-flash');
+    
+    setTimeout(() => {
+        document.body.classList.remove('boot-flash');
+    }, 500);
+    
+    initMainSite();
+}
+
+// Skip boot sequence on click
+function skipBoot() {
+    if (bootSkipped) return;
+    bootSkipped = true;
+    
+    // Clear all timers
+    bootTimers.forEach(timer => clearTimeout(timer));
+    bootTimers = [];
+    
+    // Hide overlay immediately
+    const overlay = document.getElementById('boot-overlay');
+    overlay.classList.add('hidden');
+    
+    // Init main site
+    initMainSite();
+}
+
+// Initialize main site (hacker text, etc.)
+function initMainSite() {
+    // Remove click listener
+    document.removeEventListener('click', skipBoot);
+    
+    // Initialize hacker text effect
+    initHackerText();
+    
+    // Any other initialization code here
+}
+
+// Start boot sequence on load
+window.addEventListener('load', () => {
+    // Add click listener for skip
+    document.addEventListener('click', skipBoot);
+    
+    // Start boot sequence
+    bootSequence();
+});
+
+// ========================================
+// Original Code (wrapped in initMainSite)
+// ========================================
 const menuLinks = document.querySelectorAll('.menu a');
 
 for (let link of menuLinks) {
@@ -125,12 +244,7 @@ function initHackerText() {
   });
 }
 
-// Initialize on DOM ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initHackerText);
-} else {
-  initHackerText();
-}
+// Note: initHackerText is now called from initMainSite() after boot sequence
 
 
 const translations = {
@@ -172,6 +286,10 @@ function switchLanguage() {
             const key = element.getAttribute("data-lang-key");
             if (translations[currentLanguage][key]) {
                 element.textContent = translations[currentLanguage][key];
+                // Update data-text for glitch effect
+                if (element.hasAttribute('data-text')) {
+                    element.setAttribute('data-text', translations[currentLanguage][key]);
+                }
             }
             setTimeout(() => {
                 element.classList.remove('hidden');
@@ -213,6 +331,38 @@ function switchTheme(){
 document.getElementById("theme-toggle").addEventListener("click", switchTheme);
 
 
+// CRT Effect Toggle
+let crtEnabled = true;
+
+function toggleCRT() {
+    crtEnabled = !crtEnabled;
+    const overlay = document.getElementById("crt-overlay");
+    const body = document.body;
+    
+    if (crtEnabled) {
+        overlay.classList.remove('disabled');
+        body.classList.remove('crt-disabled');
+    } else {
+        overlay.classList.add('disabled');
+        body.classList.add('crt-disabled');
+    }
+    
+    // Save preference to localStorage
+    localStorage.setItem('crtEnabled', crtEnabled);
+}
+
+// Load CRT preference on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const savedCrtState = localStorage.getItem('crtEnabled');
+    if (savedCrtState !== null) {
+        crtEnabled = savedCrtState === 'true';
+        if (!crtEnabled) {
+            toggleCRT();
+        }
+    }
+});
+
+document.getElementById("crt-toggle").addEventListener("click", toggleCRT);
 
 
 var Input = {

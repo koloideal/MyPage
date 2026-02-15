@@ -239,3 +239,635 @@ a {
 }
 
 
+
+
+/* ========================================
+   CRT Monitor Effect
+   ======================================== */
+
+:root {
+    --crt-glow-color: #00FF41;
+    --crt-glow-intensity: 0.6;
+    --crt-scanline-opacity: 0.15;
+    --crt-vignette-intensity: 0.4;
+}
+
+/* CRT Overlay Container */
+.crt-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.crt-overlay.disabled {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Scanlines Effect */
+.crt-scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0) 0px,
+        rgba(0, 0, 0, 0) 1px,
+        rgba(0, 0, 0, var(--crt-scanline-opacity)) 2px,
+        rgba(0, 0, 0, var(--crt-scanline-opacity)) 3px
+    );
+    animation: crt-flicker 0.15s infinite alternate;
+}
+
+/* Vignette Effect */
+.crt-vignette {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0) 50%,
+        rgba(0, 0, 0, var(--crt-vignette-intensity)) 100%
+    );
+}
+
+/* Subtle Flicker Animation */
+@keyframes crt-flicker {
+    0% {
+        opacity: 0.98;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.97;
+    }
+}
+
+/* Text Glow Effect */
+body {
+    text-shadow: 0 0 2px var(--crt-glow-color),
+                 0 0 4px rgba(0, 255, 65, var(--crt-glow-intensity));
+}
+
+h1, h2, h3 {
+    text-shadow: 0 0 3px var(--crt-glow-color),
+                 0 0 6px rgba(0, 255, 65, var(--crt-glow-intensity)),
+                 0 0 9px rgba(0, 255, 65, calc(var(--crt-glow-intensity) * 0.5));
+}
+
+/* CRT Toggle Button */
+#crt-toggle {
+    position: fixed;
+    top: 70px;
+    left: 20px;
+    background: #333;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 50px;
+    transition: background 0.3s ease-in-out;
+    font-family: "Nunito", sans-serif;
+    z-index: 100;
+}
+
+#crt-toggle:hover {
+    background: #555;
+}
+
+.light-theme #crt-toggle {
+    background-color: #6c6c6c;
+}
+
+/* Adjust CRT colors for light theme */
+.light-theme {
+    --crt-glow-color: #008800;
+    --crt-glow-intensity: 0.3;
+    --crt-scanline-opacity: 0.08;
+    --crt-vignette-intensity: 0.2;
+}
+
+/* Disable text glow when CRT is off */
+body.crt-disabled {
+    text-shadow: none;
+}
+
+body.crt-disabled h1,
+body.crt-disabled h2,
+body.crt-disabled h3 {
+    text-shadow: none;
+}
+
+
+/* ========================================
+   CRT Glitch Effect for Headers
+   ======================================== */
+
+.crt-glitch {
+    position: relative;
+    display: inline-block;
+}
+
+/* Main glitch animation */
+@keyframes glitch-anim {
+    0%, 10% {
+        transform: translate(0);
+        text-shadow: 
+            0 0 3px var(--crt-glow-color),
+            0 0 6px rgba(0, 255, 65, var(--crt-glow-intensity)),
+            0 0 9px rgba(0, 255, 65, calc(var(--crt-glow-intensity) * 0.5));
+    }
+    
+    10.5% {
+        transform: translate(-2px, 1px);
+        text-shadow: 
+            -3px 0 #FF0000,
+            3px 0 #00FFFF,
+            0 0 3px var(--crt-glow-color);
+    }
+    
+    11% {
+        transform: translate(2px, -1px);
+        text-shadow: 
+            -2px 0 #FF0000,
+            2px 0 #00FFFF,
+            0 0 3px var(--crt-glow-color);
+    }
+    
+    11.5% {
+        transform: translate(-1px, 0);
+        text-shadow: 
+            -4px 0 #FF0000,
+            4px 0 #00FFFF,
+            0 0 3px var(--crt-glow-color);
+    }
+    
+    12%, 35% {
+        transform: translate(0);
+        text-shadow: 
+            0 0 3px var(--crt-glow-color),
+            0 0 6px rgba(0, 255, 65, var(--crt-glow-intensity)),
+            0 0 9px rgba(0, 255, 65, calc(var(--crt-glow-intensity) * 0.5));
+    }
+    
+    35.5% {
+        transform: translate(1px, 1px);
+        text-shadow: 
+            -2px 0 #FF0000,
+            2px 0 #00FFFF,
+            0 0 3px var(--crt-glow-color);
+    }
+    
+    36% {
+        transform: translate(-1px, -1px);
+        text-shadow: 
+            -3px 0 #FF0000,
+            3px 0 #00FFFF,
+            0 0 3px var(--crt-glow-color);
+    }
+    
+    36.5%, 60% {
+        transform: translate(0);
+        text-shadow: 
+            0 0 3px var(--crt-glow-color),
+            0 0 6px rgba(0, 255, 65, var(--crt-glow-intensity)),
+            0 0 9px rgba(0, 255, 65, calc(var(--crt-glow-intensity) * 0.5));
+    }
+    
+    60.5% {
+        transform: translate(-2px, 0);
+        text-shadow: 
+            -4px 0 #FF0000,
+            4px 0 #00FFFF,
+            0 0 3px var(--crt-glow-color);
+    }
+    
+    61% {
+        transform: translate(2px, 1px);
+        text-shadow: 
+            -2px 0 #FF0000,
+            2px 0 #00FFFF,
+            0 0 3px var(--crt-glow-color);
+    }
+    
+    61.5%, 85% {
+        transform: translate(0);
+        text-shadow: 
+            0 0 3px var(--crt-glow-color),
+            0 0 6px rgba(0, 255, 65, var(--crt-glow-intensity)),
+            0 0 9px rgba(0, 255, 65, calc(var(--crt-glow-intensity) * 0.5));
+    }
+    
+    85.5% {
+        transform: translate(1px, -1px);
+        text-shadow: 
+            -3px 0 #FF0000,
+            3px 0 #00FFFF,
+            0 0 3px var(--crt-glow-color);
+    }
+    
+    86% {
+        transform: translate(-1px, 1px);
+        text-shadow: 
+            -2px 0 #FF0000,
+            2px 0 #00FFFF,
+            0 0 3px var(--crt-glow-color);
+    }
+    
+    86.5%, 100% {
+        transform: translate(0);
+        text-shadow: 
+            0 0 3px var(--crt-glow-color),
+            0 0 6px rgba(0, 255, 65, var(--crt-glow-intensity)),
+            0 0 9px rgba(0, 255, 65, calc(var(--crt-glow-intensity) * 0.5));
+    }
+}
+
+/* Glitch clip animation for scanline effect */
+@keyframes glitch-clip {
+    0%, 94% {
+        clip-path: inset(0 0 0 0);
+    }
+    
+    94.5% {
+        clip-path: inset(40% 0 45% 0);
+    }
+    
+    95% {
+        clip-path: inset(20% 0 70% 0);
+    }
+    
+    95.5% {
+        clip-path: inset(60% 0 30% 0);
+    }
+    
+    96%, 100% {
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+/* Pseudo-element for ghost effect */
+.crt-glitch::before,
+.crt-glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+
+.crt-glitch::before {
+    animation: glitch-before 5s infinite;
+    text-shadow: -3px 0 #FF0000;
+    z-index: -1;
+}
+
+.crt-glitch::after {
+    animation: glitch-after 7s infinite;
+    text-shadow: 3px 0 #00FFFF;
+    z-index: -1;
+}
+
+@keyframes glitch-before {
+    0%, 10% {
+        opacity: 0;
+        transform: translate(0);
+    }
+    
+    10.5% {
+        opacity: 0.8;
+        transform: translate(-4px, 0);
+    }
+    
+    11.5% {
+        opacity: 0.6;
+        transform: translate(-2px, 2px);
+    }
+    
+    12%, 35% {
+        opacity: 0;
+        transform: translate(0);
+    }
+    
+    35.5% {
+        opacity: 0.7;
+        transform: translate(-3px, 1px);
+    }
+    
+    36.5%, 60% {
+        opacity: 0;
+        transform: translate(0);
+    }
+    
+    60.5% {
+        opacity: 0.8;
+        transform: translate(-4px, -1px);
+    }
+    
+    61.5%, 85% {
+        opacity: 0;
+        transform: translate(0);
+    }
+    
+    85.5% {
+        opacity: 0.7;
+        transform: translate(-3px, 0);
+    }
+    
+    86.5%, 100% {
+        opacity: 0;
+        transform: translate(0);
+    }
+}
+
+@keyframes glitch-after {
+    0%, 10% {
+        opacity: 0;
+        transform: translate(0);
+    }
+    
+    10.5% {
+        opacity: 0.7;
+        transform: translate(4px, 0);
+    }
+    
+    11.5% {
+        opacity: 0.5;
+        transform: translate(2px, -2px);
+    }
+    
+    12%, 35% {
+        opacity: 0;
+        transform: translate(0);
+    }
+    
+    35.5% {
+        opacity: 0.6;
+        transform: translate(3px, -1px);
+    }
+    
+    36.5%, 60% {
+        opacity: 0;
+        transform: translate(0);
+    }
+    
+    60.5% {
+        opacity: 0.7;
+        transform: translate(4px, 1px);
+    }
+    
+    61.5%, 85% {
+        opacity: 0;
+        transform: translate(0);
+    }
+    
+    85.5% {
+        opacity: 0.6;
+        transform: translate(3px, 0);
+    }
+    
+    86.5%, 100% {
+        opacity: 0;
+        transform: translate(0);
+    }
+}
+
+/* Apply glitch to h1 with different timing */
+h1.crt-glitch {
+    animation: glitch-anim 4s infinite;
+}
+
+h1.crt-glitch::before {
+    animation: glitch-before 4s infinite;
+}
+
+h1.crt-glitch::after {
+    animation: glitch-after 4s infinite;
+}
+
+/* Apply glitch to h2 with different timing */
+h2.crt-glitch {
+    animation: glitch-anim 5.5s infinite;
+}
+
+h2.crt-glitch::before {
+    animation: glitch-before 5.5s infinite;
+}
+
+h2.crt-glitch::after {
+    animation: glitch-after 5.5s infinite;
+}
+
+/* Disable glitch when CRT is off */
+body.crt-disabled .crt-glitch,
+body.crt-disabled .crt-glitch::before,
+body.crt-disabled .crt-glitch::after {
+    animation: none !important;
+}
+
+
+/* ========================================
+   Boot Sequence Overlay
+   ======================================== */
+
+#boot-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Courier New', monospace;
+    cursor: pointer;
+}
+
+#boot-overlay.hidden {
+    display: none;
+}
+
+.boot-text {
+    color: #00ff00;
+    font-size: 18px;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px #00ff00;
+    white-space: pre;
+    text-align: left;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    line-height: 1.6;
+}
+
+.boot-text div {
+    margin-bottom: 8px;
+}
+
+.boot-text div.typing::after {
+    content: '█';
+    animation: cursor-blink 0.8s infinite;
+}
+
+@keyframes cursor-blink {
+    0%, 49% {
+        opacity: 1;
+    }
+    50%, 100% {
+        opacity: 0;
+    }
+}
+
+/* CRT Line with gradient */
+.crt-line {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        #00ff00 30%,
+        #ffffff 50%,
+        #00ff00 70%,
+        transparent 100%
+    );
+    box-shadow: 
+        0 0 20px #00ff00,
+        0 0 40px #00ff00,
+        0 0 60px #00ff00,
+        0 0 80px #ffffff;
+    transform: scale(0, 0);
+    transform-origin: center center;
+    opacity: 0;
+}
+
+.crt-line.animate {
+    animation: crt-boot-glitch 1s steps(1) forwards;
+}
+
+/* Glitchy CRT turn on with gradient */
+@keyframes crt-boot-glitch {
+    0% {
+        transform: scale(0, 0);
+        opacity: 0;
+    }
+    
+    5% {
+        transform: scale(0, 0.002);
+        opacity: 1;
+    }
+    
+    10% {
+        transform: scale(0.15, 0.002);
+    }
+    
+    12% {
+        transform: scale(0.25, 0.002);
+    }
+    
+    15% {
+        transform: scale(0.08, 0.002);
+    }
+    
+    20% {
+        transform: scale(0.35, 0.002);
+    }
+    
+    30% {
+        transform: scale(0.55, 0.002);
+    }
+    
+    40% {
+        transform: scale(0.75, 0.003);
+    }
+    
+    45% {
+        transform: scale(0.7, 0.002);
+    }
+    
+    50% {
+        transform: scale(0.9, 0.003);
+    }
+    
+    60% {
+        transform: scale(1, 0.003);
+    }
+    
+    65% {
+        transform: scale(1, 0.008);
+    }
+    
+    70% {
+        transform: scale(1, 0.015);
+    }
+    
+    75% {
+        transform: scale(1, 0.05);
+    }
+    
+    80% {
+        transform: scale(1, 0.12);
+    }
+    
+    85% {
+        transform: scale(1, 0.08);
+    }
+    
+    88% {
+        transform: scale(1, 0.03);
+    }
+    
+    92% {
+        transform: scale(1, 0.15);
+    }
+    
+    95% {
+        transform: scale(1, 0.5);
+    }
+    
+    98% {
+        transform: scale(1, 1);
+    }
+    
+    100% {
+        transform: scale(1, 1);
+        opacity: 0;
+    }
+}
+
+/* Flash effect for content */
+@keyframes boot-flash {
+    0% {
+        filter: brightness(2);
+    }
+    
+    50% {
+        filter: brightness(1.5);
+    }
+    
+    100% {
+        filter: brightness(1);
+    }
+}
+
+body.boot-flash {
+    animation: boot-flash 0.5s ease-out;
+}

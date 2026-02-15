@@ -24,6 +24,12 @@
     gtag('config', 'G-L6GGGVSXS6');
 </script>
 <body>
+<!-- Boot Sequence Overlay -->
+<div id="boot-overlay">
+    <div class="boot-text"></div>
+    <div class="crt-line"></div>
+</div>
+
 <nav class="menu">
     <ul>
         <li><a href="#about" data-lang-key="menu_about">About Me</a></li>
@@ -33,7 +39,7 @@
 </nav>
 <div class="section" id="about">
     <div class="container" id="text-container">
-        <h1 data-lang-key="about_title" id="h1_about_me">About Me</h1>
+        <h1 class="crt-glitch" data-text="About Me" data-lang-key="about_title" id="h1_about_me">About Me</h1>
         <p data-lang-key="about_text"><b>I am a Python Backend Dev. I work with Django, FastAPI and Flask. I design APIs, solve scaling problems.<br>
             I am not afraid of difficult challenges. I "revive" legacy code without losing functionality. I try to adhere to best practices, I work for the future.<br>
             I work with REST, task queues (Celery, RabbitMQ) and cloud services. I write tests, set up CI/CD.<br>
@@ -43,7 +49,7 @@
 </div>
 <div class="section" id="skills">
     <div class="container">
-        <h1 data-lang-key="skills_title" id="stack">Stack</h1>
+        <h1 class="crt-glitch" data-text="Stack" data-lang-key="skills_title" id="stack">Stack</h1>
         <ul>
             <li class="fade-in"><b>Python</b></li>
             <li class="fade-in">Flask / Quart / FastAPI / Starlette</li>
@@ -62,7 +68,7 @@
 </div>
 <div class="section" id="contact">
     <div class="container" id="contact_container">
-        <h1 data-lang-key="contact_title">Contacts</h1>
+        <h1 class="crt-glitch" data-text="Contacts" data-lang-key="contact_title">Contacts</h1>
         <ul class="contact_links">
             <li><a href="mailto:kolo.is.main@gmail.com"><img src="logo/gmail.png" title="Gmail" alt="Gmail" height=32 width=32></a></li>
             <li><a href="https://t.me/kolo_id"><img src="logo/telegram.png" title="Telegram" alt="Telegram" height=32 width=32></a></li>
@@ -74,6 +80,14 @@
 </div>
 <button id="theme-toggle">light</button>
 <button id="language-toggle">ru</button>
+<button id="crt-toggle" title="Toggle CRT Effect">CRT</button>
+
+<!-- CRT Monitor Effect Overlay -->
+<div class="crt-overlay" id="crt-overlay">
+    <div class="crt-scanlines"></div>
+    <div class="crt-vignette"></div>
+</div>
+
 <script src="script.js"></script>
 </body>
 </html>
