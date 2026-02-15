@@ -179,12 +179,12 @@ canvas.width = Math.max(window.innerWidth, window.innerWidth);
 //canvas.height = Math.max(window.innerWidth, window.innerWidth);
 
 canvas.height = window.innerHeight;
-canvas.style.position = "absolute";
+canvas.style.position = "fixed";
 canvas.style.left = "0px";
 canvas.style.top = "0px";
-canvas.style.zIndex = "5";
+canvas.style.zIndex = "1";
 canvas.style.pointerEvents = "none";
-document.body.style.overflow = "hidden";
+// document.body.style.overflow = "hidden";
 var ctx = canvas.getContext("2d");
 //Necessary classes
 var segmentCount = 0;

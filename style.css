@@ -62,17 +62,17 @@ body {
 }
 
 #about {
-    background-color: #111;
+    background-color: rgba(17, 17, 17, 0.5);
     transition: background-color 0.5s ease;
 }
 
 #skills {
-    background-color: #222;
+    background-color: rgba(34, 34, 34, 0.6);
     transition: background-color 0.5s ease;
 }
 
 #contact {
-    background-color: #111;
+    background-color: rgba(17, 17, 17, 0.5);
     transition: background-color 0.5s ease;
 }
 
