@@ -57,6 +57,8 @@ body {
     text-align: center;
     padding: 20px;
     font-family: "Nunito", sans-serif;
+    position: relative;
+    z-index: 2;
 }
 
 #about {
@@ -77,6 +79,8 @@ body {
 .container {
     max-width: 800px;
     text-align: left;
+    position: relative;
+    z-index: 2;
 }
 
 
